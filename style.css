@@ -74,6 +74,17 @@ h1 {
     width: 100%;
 }
 
+.field.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.field.checkbox span {
+    display: inline;
+    margin-bottom: 0;
+}
+
 .start-btn {
     width: 100%;
     padding: 12px;

@@ -6,6 +6,7 @@ const attemptsRange = el('attemptsRange');
 const attemptsValue = el('attemptsValue');
 const timeRange = el('timeRange');
 const timeValueLabel = el('timeValueLabel');
+const noDuplicateCheck = el('noDuplicateCheck');
 const startBtn = el('startBtn');
 
 const attemptCounter = el('attemptCounter');
@@ -79,6 +80,18 @@ function deleteDigit() {
 function shakeDigits() {
     digitsEl.classList.add('shake');
     setTimeout(() => digitsEl.classList.remove('shake'), 300);
+}
+
+function generatePin(count, noDuplicate) {
+    if (!noDuplicate) {
+        return Array.from({ length: count }, () => Math.floor(Math.random() * 10));
+    }
+    const pool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, count);
 }
 
 function evaluateGuess(guess, pin) {
@@ -183,7 +196,7 @@ function startGame() {
     locked = false;
     attempts = 0;
     currentInput = [];
-    correctPin = Array.from({ length: digitCount }, () => Math.floor(Math.random() * 10));
+    correctPin = generatePin(digitCount, noDuplicateCheck.checked);
 
     startBtn.disabled = true;
     resultMessage.textContent = '';
