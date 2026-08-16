@@ -51,7 +51,7 @@ h1 {
     padding: 20px;
 }
 
-.settings h2 {
+.settings h2, .history-panel h2 {
     font-size: 16px;
     margin-bottom: 16px;
     color: #b7bde0;
@@ -275,13 +275,20 @@ h1 {
     color: #EC3030;
 }
 
+.history-panel {
+    margin-top: 24px;
+    overflow-x: auto;
+}
+
 .history {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-    max-height: 220px;
-    overflow-y: auto;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-empty {
+    color: #565c85;
+    font-size: 13px;
 }
 
 .history-entry {

@@ -127,6 +127,9 @@ function showResultsOnDigits(results) {
 }
 
 function addToHistory(guess, results) {
+    const empty = historyEl.querySelector('.history-empty');
+    if (empty) empty.remove();
+
     const entry = document.createElement('div');
     entry.className = 'history-entry';
     guess.forEach((d, i) => {
@@ -201,7 +204,7 @@ function startGame() {
     startBtn.disabled = true;
     resultMessage.textContent = '';
     resultMessage.className = 'result-message';
-    historyEl.innerHTML = '';
+    historyEl.innerHTML = '<div class="history-empty">まだ記録がありません</div>';
     attemptCounter.textContent = `0 / ${maxAttempts}`;
     renderDigits();
 
