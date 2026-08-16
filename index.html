@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Crack</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page">
+    <h1>Code Crack</h1>
+    <p class="sub">桁数分の数字を当ててください。緑: 数字も位置も正解 / 黄: 数字は合っているが位置違い / 赤: 含まれていない。</p>
+
+    <div class="layout">
+        <section class="panel settings">
+            <h2>設定</h2>
+
+            <label class="field">
+                <span>桁数: <b id="digitsValue">4</b></span>
+                <input type="range" id="digitsRange" min="3" max="6" step="1" value="4">
+            </label>
+
+            <label class="field">
+                <span>最大試行回数: <b id="attemptsValue">6</b></span>
+                <input type="range" id="attemptsRange" min="3" max="12" step="1" value="6">
+            </label>
+
+            <label class="field">
+                <span>制限時間: <b id="timeValueLabel">60.0</b> 秒</span>
+                <input type="range" id="timeRange" min="10000" max="180000" step="1000" value="60000">
+            </label>
+
+            <button class="start-btn" id="startBtn">開始する</button>
+
+            <div class="stats">
+                <div><span>試行</span><b id="statPlays">0</b></div>
+                <div><span>成功</span><b id="statClears">0</b></div>
+                <div><span>成功率</span><b id="statRate">-</b></div>
+            </div>
+        </section>
+
+        <section class="panel game-area">
+            <div class="crack-wrap">
+                <div class="crack-status">
+                    <span id="attemptCounter">0 / 6</span>
+                    <span id="timerDisplay">60.0s</span>
+                </div>
+                <div class="timer-bar" id="timerBarWrap">
+                    <div class="timer-bar-inner" id="timerBar"></div>
+                </div>
+
+                <div class="digits" id="digits"></div>
+
+                <div class="crack-buttons">
+                    <button class="crack-btn" id="crackBtn">CRACK</button>
+                    <button class="delete-btn" id="deleteBtn">DELETE</button>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <div class="history" id="history"></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
