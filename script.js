@@ -14,6 +14,7 @@ const timerDisplay = el('timerDisplay');
 const timerBarWrap = el('timerBarWrap');
 const timerBar = el('timerBar');
 const digitsEl = el('digits');
+const numpadEl = el('numpad');
 const crackBtn = el('crackBtn');
 const deleteBtn = el('deleteBtn');
 const resultMessage = el('resultMessage');
@@ -24,7 +25,19 @@ const statClears = el('statClears');
 const statRate = el('statRate');
 
 const STORAGE_KEY = 'codeCrackStats';
-const stats = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"plays":0,"clears":0}');
+
+function loadStats() {
+    try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!raw || typeof raw !== 'object') throw new Error('invalid');
+        const num = (v) => (Number.isFinite(v) && v >= 0 ? v : 0);
+        return { plays: num(raw.plays), clears: num(raw.clears) };
+    } catch {
+        return { plays: 0, clears: 0 };
+    }
+}
+
+const stats = loadStats();
 
 let active = false;
 let digitCount = 4;
@@ -36,6 +49,7 @@ let attempts = 0;
 let deadline = 0;
 let timerInterval = null;
 let locked = false;
+let pendingTimer = null;
 
 function renderStats() {
     statPlays.textContent = stats.plays;
@@ -46,7 +60,11 @@ function renderStats() {
 function saveResult(won) {
     stats.plays++;
     if (won) stats.clears++;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    } catch {
+        // storage unavailable/full - continue with in-memory stats only
+    }
     renderStats();
 }
 
@@ -75,6 +93,17 @@ function deleteDigit() {
     if (!active || locked) return;
     currentInput.pop();
     renderDigits();
+}
+
+function buildNumpad() {
+    for (let n = 0; n <= 9; n++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'numpad-btn';
+        btn.textContent = String(n);
+        btn.addEventListener('click', () => addDigit(n));
+        numpadEl.appendChild(btn);
+    }
 }
 
 function shakeDigits() {
@@ -143,6 +172,10 @@ function addToHistory(guess, results) {
 
 function crack() {
     if (!active || locked) return;
+    if (performance.now() >= deadline) {
+        endGame(false);
+        return;
+    }
     if (currentInput.length !== digitCount) {
         shakeDigits();
         return;
@@ -157,18 +190,21 @@ function crack() {
     showResultsOnDigits(results);
 
     if (allCorrect) {
-        setTimeout(() => endGame(true), 800);
+        endGame(true);
         return;
     }
 
     addToHistory(currentInput.slice(), results);
 
     if (attempts >= maxAttempts) {
-        setTimeout(() => endGame(false), 1000);
+        endGame(false);
         return;
     }
 
-    setTimeout(() => {
+    clearTimeout(pendingTimer);
+    pendingTimer = setTimeout(() => {
+        pendingTimer = null;
+        if (!active) return;
         currentInput = [];
         renderDigits();
         locked = false;
@@ -190,6 +226,8 @@ function updateTimer() {
 
 function startGame() {
     if (active) return;
+    clearTimeout(pendingTimer);
+    pendingTimer = null;
 
     digitCount = Number(digitsRange.value);
     maxAttempts = Number(attemptsRange.value);
@@ -218,10 +256,13 @@ function startGame() {
 }
 
 function endGame(success) {
+    if (!active) return;
     active = false;
     locked = true;
     clearInterval(timerInterval);
     timerInterval = null;
+    clearTimeout(pendingTimer);
+    pendingTimer = null;
     timerBarWrap.classList.remove('active');
 
     resultMessage.textContent = success
@@ -251,5 +292,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+buildNumpad();
 renderStats();
 renderDigits();

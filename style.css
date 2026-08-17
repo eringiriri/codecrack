@@ -179,12 +179,16 @@ h1 {
 
 .digits {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
 }
 
 .digit {
-    width: 52px;
-    height: 60px;
+    flex: 1 1 0;
+    max-width: 52px;
+    aspect-ratio: 52 / 60;
     background: #1f2336;
     border: 2px solid #2c3357;
     border-radius: 8px;
@@ -192,7 +196,7 @@ h1 {
     align-items: center;
     justify-content: center;
     font-family: 'Roboto Mono', monospace;
-    font-size: 26px;
+    font-size: clamp(16px, 6vw, 26px);
     font-weight: 700;
     transition: .15s background, .15s border-color;
 }
@@ -215,7 +219,7 @@ h1 {
     color: #EC3030;
 }
 
-.digit.shake {
+.digits.shake {
     animation: shake .3s;
 }
 
@@ -223,6 +227,31 @@ h1 {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
+}
+
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    width: 100%;
+}
+
+.numpad-btn {
+    padding: 12px 0;
+    background: #1f2336;
+    color: #cfd3ec;
+    border: 1px solid #2c3357;
+    border-radius: 6px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .15s border-color, .15s background;
+}
+
+.numpad-btn:hover {
+    border-color: #465490;
+    background: #24293C;
 }
 
 .crack-buttons {
